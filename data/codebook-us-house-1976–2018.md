@@ -1,57 +1,57 @@
 ﻿
-#Codebook for U.S. House Returns 1976–2018
+# Codebook for U.S. House Returns 1976–2018
 
 The data file `1976-2018-house` contains constituency (district) returns for elections to the U.S. House of Representatives from 1976 to 2018.  The data source is the document "[Statistics of the Congressional Election](http://history.house.gov/Institution/Election-Statistics/Election-Statistics/)," published biennially by the Clerk of the U.S. House of Representatives. 2018 data comes from official state election websites, and for Kansas, come from Stephen Pettigrew and the Kansas Secretary of State office (in some cases, they are marked as unofficial, and will be updated at a later time).
 
-All string variables are in upper case. 
+All string variables are in upper case.
 
-##Variables 
+## Variables
 The variables are listed as they appear in the data file.  
 
-###year
+### year
  - **Description**: year in which election was held
- 
+
 ---------------
 
-###state
+### state
  - **Description**: state name
 
  ---------------
- 
-###state_po
+
+### state_po
  - **Description**: U.S. postal code state abbreviation
 
  ---------------
- 
-###state_fips
+
+### state_fips
  - **Description**: State FIPS code
 
 ----------------
 
-###state_cen
+### state_cen
  - **Description**: U.S. Census state code
 
  ---------------
- 
+
 ### state_ic
  - **Description**: ICPSR state code
 
- --------------- 
- 
-###office
+ ---------------
+
+### office
 - **Description**: U.S. House (constant)
-  
+
 ---------------
 
 ### district
  - **Description**: district number
- - ****Note****:	At-large districts are coded as 0 (zero).
+ - ****Note**:	At-large districts are coded as 0 (zero).
 
 ---------------
 
 ### stage
  - **Description**: electoral stage
- - **Coding**: 
+ - **Coding**:
 
 | code | definition |
 |:---|:---|
@@ -82,9 +82,9 @@ The variables are listed as they appear in the data file.
 ### party
 - **Description**: party of the candidate (always entirely lowercase)
   - **Note**: Parties are as they appear in the House Clerk report.  In states that allow candidates to appear on multiple party lines, separate vote totals are indicated for each party.  Therefore, for analysis that involves candidate totals, it will be necessary to aggregate across all party lines within a district.  For analysis that focuses on two-party vote totals, it will be necessary to account for major party candidates who receive votes under multiple party labels. Minnesota party labels are given as they appear on the Minnesota ballots. Future versions of this file will include codes for candidates who are endorsed by major parties, regardless of the party label under which they receive votes.
-	
+
 ----------------
-	
+
 ### writein
 - **Description**: vote totals associated with write-in candidates
 - **Coding**:
@@ -100,8 +100,8 @@ The variables are listed as they appear in the data file.
 - **Description**: mode of voting; states with data that doesn't break down returns by mode are marked as "total"
 
 ----------------
-	
-### candidatevotes 
+
+### candidatevotes
  - **Description**: votes received by this candidate for this particular party
 
 ----------------
@@ -113,7 +113,7 @@ The variables are listed as they appear in the data file.
 
 
 ### fusion_ticket
- - **Description**: A TRUE/FALSE indicator as to whether the given candidate is running on a fusion party ticket, which will in turn mean that a candidate will appear multiple times, but by different parties, for a given election. States with fusion tickets include Connecticut, New Jersey, New York, and South Carolina. 
+ - **Description**: A TRUE/FALSE indicator as to whether the given candidate is running on a fusion party ticket, which will in turn mean that a candidate will appear multiple times, but by different parties, for a given election. States with fusion tickets include Connecticut, New Jersey, New York, and South Carolina.
 
  ----------------
 ### unofficial
@@ -124,9 +124,9 @@ The variables are listed as they appear in the data file.
 ### version  
 - **Description**: date when this dataset was finalized
 
-##NOTES: 
+## NOTES:
 
-candidatevotes: for uncontested races, value is set to 1 in FL. Should user want to set a higher value for analysis 
+candidatevotes: for uncontested races, value is set to 1 in FL. Should user want to set a higher value for analysis
 purposes, consider setting the value as the maximum for a given state-year. The code in R would be the following:
 df <- read.csv("1976-2018-house.csv", stringsAsFactors = FALSE)
 df <- df %>%
@@ -136,12 +136,13 @@ df <- df %>%
 The following code should be used if the user would like to assume that uncontested candidates would have recieved
 as many votes as the best contested candidate.
 
-district: district is set to 0 for single member states. 
+district: district is set to 0 for single member states.
 
 party and candidate: candidate - party combinations are recorded as they were on the state elections website. This
 means that for states where the same candidate might appear on multiple parties, like in NY, they are recorded as
-such. Therefore, for users interested in finding the primary party, run the following code: 
+such. Therefore, for users interested in finding the primary party, run the following code:
 
+```
 df <- read.csv("1976-2018-house.csv", stringsAsFactors = FALSE)
 df$district <- str_pad(df$district, width=2, pad="0", side="left)
 df$state_fips <- str_pad(df$state_fips, width=2, pad="0", side="left)
@@ -152,6 +153,4 @@ df_max <- df %>%
 df_sum <- df %>%
    group_by(candidate, GEOID, year) %>%
    aggregate(candvotes_sum = sum(candvotes))
-
-
- 
+```
